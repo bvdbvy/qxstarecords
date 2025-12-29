@@ -1,23 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function Navbar() {
+  const [open, setOpen] = useState(false);
+
   return (
     <nav className="nav">
-      <Link to="/" className="logo">
-        QXSTA
-      </Link>
+      <div className="nav-inner">
+        <Link to="/" className="logo" onClick={() => setOpen(false)}>
+          <img
+            src="/logo.jpeg"
+            alt="QXSTA Records"
+            className="logo-img"
+          />
+        </Link>
 
-      <div className="nav-links">
-        <Link to="/artists">Artists</Link>
-        <Link to="/releases">Releases</Link>
-        <Link to="/press">Press</Link>
+        <button
+          className="menu-toggle"
+          onClick={() => setOpen(!open)}
+          aria-label="Toggle navigation"
+        >
+          ☰
+        </button>
+
+        <div className={`nav-links ${open ? "open" : ""}`}>
+          <Link to="/artists" onClick={() => setOpen(false)}>
+            Artists
+          </Link>
+          <Link to="/releases" onClick={() => setOpen(false)}>
+            Releases
+          </Link>
+          <Link to="/press" onClick={() => setOpen(false)}>
+            Press
+          </Link>
+        </div>
       </div>
     </nav>
   );
 }
-<img 
-  src="/logo.jpeg" 
-  alt="QXSTA Records" 
-  className="logo"
-/>
