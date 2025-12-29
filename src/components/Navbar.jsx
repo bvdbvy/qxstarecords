@@ -9,9 +9,9 @@ export default function Navbar() {
       <div className="nav-inner">
         <Link to="/" className="logo" onClick={() => setOpen(false)}>
           <img
-            src="/logo.jpeg"
+            src="/qxsta-logo.png"
             alt="QXSTA Records"
-            className="logo-img"
+            className="logo"
           />
         </Link>
 
