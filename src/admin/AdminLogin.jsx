@@ -1,42 +1,54 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../auth/AuthContext";
+import { supabase } from "../supabase";
 
 export default function AdminLogin() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const navigate = useNavigate();
-  const { loginAsAdmin } = useAuth();
-
-  function handleSubmit(e) {
+  async function handleLogin(e) {
     e.preventDefault();
+    setError("");
 
-    const result = loginAsAdmin(password);
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-    if (result.success) {
-      navigate("/admin");
-    } else {
-      setError(result.message);
+    if (error) {
+      setError(error.message);
+      return;
     }
+
+    navigate("/admin");
   }
 
   return (
-    <section className="page auth-page">
-      <h1>Admin Login</h1>
+    <section className="admin-section">
+      <h2>Admin Login</h2>
 
-      <form onSubmit={handleSubmit} className="auth-form">
+      <form className="admin-form" onSubmit={handleLogin}>
         <input
-          type="password"
-          placeholder="Admin password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          type="email"
+          placeholder="Admin email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
           required
         />
 
-        {error && <p className="error">{error}</p>}
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          required
+        />
 
-        <button type="submit">Login</button>
+        {error && <p className="admin-error">{error}</p>}
+
+        <button>Login</button>
       </form>
     </section>
   );

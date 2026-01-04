@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getReleases, saveReleases } from "../data/releases";
+import { getReleaseById, updateRelease } from "../data/releases";
 import { uploadImage } from "../utils/cloudinaryUpload";
+
 
 export default function AdminEditRelease() {
   const { id } = useParams();
@@ -10,53 +11,47 @@ export default function AdminEditRelease() {
   const [title, setTitle] = useState("");
   const [artist, setArtist] = useState("");
   const [link, setLink] = useState("");
-  const [cover, setCover] = useState("");
   const [coverPreview, setCoverPreview] = useState("");
   const [newImage, setNewImage] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const release = getReleases().find(r => r.id === Number(id));
+    async function loadRelease() {
+      const release = await getReleaseById(id);
+      if (!release) {
+        alert("Release not found");
+        navigate("/admin/releases");
+        return;
+      }
 
-    if (!release) {
-      alert("Release not found");
-      navigate("/admin/releases");
-      return;
+      setTitle(release.title || "");
+      setArtist(release.artist || "");
+      setLink(release.link || "");
+      setCoverPreview(release.cover || "");
+      setLoading(false);
     }
 
-    setTitle(release.title);
-    setArtist(release.artist);
-    setLink(release.link);
-    setCover(release.cover);
-   setCoverPreview(release.cover?.url || "");
+    loadRelease();
   }, [id, navigate]);
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    setNewImage(file);
-    setCoverPreview(URL.createObjectURL(file));
-  };
 
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
 
     try {
-      let updatedCover = cover;
+      let cover = coverPreview;
 
       if (newImage) {
-        updatedCover = await uploadImage(newImage);
+        cover = await uploadImage(newImage);
       }
 
-      const updated = getReleases().map(r =>
-        r.id === Number(id)
-          ? { ...r, title, artist, link, cover: updatedCover }
-          : r
-      );
+      await updateRelease(id, {
+        title,
+        artist,
+        link,
+        cover
+      });
 
-      saveReleases(updated);
       navigate("/admin/releases");
     } catch (err) {
       console.error(err);
@@ -64,6 +59,10 @@ export default function AdminEditRelease() {
     } finally {
       setLoading(false);
     }
+  }
+
+  if (loading) {
+    return <p className="admin-section">Loading release...</p>;
   }
 
   return (
@@ -77,13 +76,22 @@ export default function AdminEditRelease() {
 
         <div className="admin-image-preview">
           {coverPreview ? (
-            <img src={coverPreview} alt="Cover Preview" />
+            <img src={coverPreview} alt="Preview" />
           ) : (
             <span>No image</span>
           )}
         </div>
 
-        <input type="file" accept="image/*" onChange={handleImageChange} />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={e => {
+            const file = e.target.files[0];
+            if (!file) return;
+            setNewImage(file);
+            setCoverPreview(URL.createObjectURL(file));
+          }}
+        />
 
         <button disabled={loading}>
           {loading ? "Saving..." : "Save Changes"}

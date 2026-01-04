@@ -1,49 +1,58 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getReleases, saveReleases } from "../data/releases";
+import { addRelease } from "../data/releases";
 import { uploadImage } from "../utils/cloudinaryUpload";
 
 export default function AdminAddRelease() {
+  const navigate = useNavigate();
+
   const [title, setTitle] = useState("");
   const [artist, setArtist] = useState("");
-  const [imageFile, setImageFile] = useState(null);
   const [link, setLink] = useState("");
+  const [imageFile, setImageFile] = useState(null);
+  const [preview, setPreview] = useState("");
+  const [progress, setProgress] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    if (sessionStorage.getItem("releaseUploadDone")) {
+      navigate("/admin/releases", { replace: true });
+    }
+  }, [navigate]);
 
   async function handleSubmit(e) {
     e.preventDefault();
-
-    if (!imageFile) {
-      alert("Please select a cover image");
-      return;
-    }
-
-    setLoading(true);
+    if (!imageFile) return alert("Upload cover art");
 
     try {
-      // 1️⃣ Upload image to Cloudinary
-      const imageUrl = await uploadImage(imageFile);
+      setLoading(true);
+      setProgress(0);
 
-      // 2️⃣ Save release metadata only
-      const releases = getReleases();
-      const newRelease = {
-        id: Date.now(),
-        title,
-        artist,
-        cover: imageUrl,
-        link,
-      };
+      // A. IMAGE UPLOAD (0–80)
+      const cover = await uploadImage(imageFile, setProgress);
 
-      saveReleases([...releases, newRelease]);
+      // B.  SAVE (80–100)
+      setProgress(85);
 
-      navigate("/admin/releases");
+await addRelease({
+  title,
+  artist,
+  link,
+  cover: cover.url,
+  cover_public_id: cover.public_id,
+  created_at: new Date().toISOString(),
+});
+
+      setProgress(100);
+      sessionStorage.setItem("releaseUploadDone", "true");
+
+      navigate("/admin/releases", { replace: true });
     } catch (err) {
       console.error(err);
-      alert("Image upload failed");
+      alert("Upload failed");
     } finally {
       setLoading(false);
+      sessionStorage.removeItem("releaseUploadDone");
     }
   }
 
@@ -51,39 +60,58 @@ export default function AdminAddRelease() {
     <section className="admin-section">
       <h2>Add New Release</h2>
 
-      <form className="admin-form" onSubmit={handleSubmit}>
-        <input
-          placeholder="Release Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
+<form className="admin-form" onSubmit={handleSubmit}>
+  <input
+    value={title}
+    onChange={e => setTitle(e.target.value)}
+    placeholder="Release title"
+    required
+  />
 
-        <input
-          placeholder="Artist Name"
-          value={artist}
-          onChange={(e) => setArtist(e.target.value)}
-          required
-        />
+  <input
+    value={artist}
+    onChange={e => setArtist(e.target.value)}
+    placeholder="Artist name"
+    required
+  />
 
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setImageFile(e.target.files[0])}
-          required
-        />
+  <input
+    value={link}
+    onChange={e => setLink(e.target.value)}
+    placeholder="Streaming link (Spotify, Audiomack, etc.)"
+    required
+  />
 
-        <input
-          placeholder="Streaming Link"
-          value={link}
-          onChange={(e) => setLink(e.target.value)}
-          required
-        />
+  <div className="admin-image-preview">
+    {preview ? <img src={preview} alt="Cover preview" /> : <span>No cover art</span>}
+  </div>
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Uploading..." : "Add Release"}
-        </button>
-      </form>
+  <input
+    type="file"
+    accept="image/*"
+    required
+    onChange={e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      setImageFile(file);
+      setPreview(URL.createObjectURL(file));
+    }}
+  />
+
+  {loading && (
+    <p className="admin-progress">
+      {progress < 80
+        ? `Uploading image… ${progress}%`
+        : progress < 100
+        ? "Saving release…"
+        : "Completed"}
+    </p>
+  )}
+
+  <button disabled={loading}>
+    {loading ? "Processing…" : "Add Release"}
+  </button>
+</form>
     </section>
   );
 }

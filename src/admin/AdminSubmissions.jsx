@@ -1,14 +1,25 @@
-import React, { useState } from "react";
-import { getSubmissions, saveSubmissions } from "../data/submissions";
+import React, { useEffect, useState } from "react";
+import { getSubmissions, deleteSubmission } from "../data/submissions";
 
 export default function AdminSubmissions() {
-  const [submissions, setSubmissions] = useState(getSubmissions());
+  const [submissions, setSubmissions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  function deleteSubmission(id) {
-    const updated = submissions.filter(s => s.id !== id);
-    setSubmissions(updated);
-    saveSubmissions(updated);
+  useEffect(() => {
+    async function load() {
+      const data = await getSubmissions();
+      setSubmissions(data);
+      setLoading(false);
+    }
+    load();
+  }, []);
+
+  async function handleDelete(id) {
+    await deleteSubmission(id);
+    setSubmissions(prev => prev.filter(s => s.id !== id));
   }
+
+  if (loading) return <p className="admin-section">Loading...</p>;
 
   return (
     <section className="admin-section">
@@ -19,20 +30,12 @@ export default function AdminSubmissions() {
       {submissions.map(sub => (
         <div key={sub.id} className="submission-card">
           <h3>{sub.name}</h3>
-          <p><strong>Email:</strong> {sub.email}</p>
-          <p><strong>Links:</strong> {sub.links}</p>
+          <p>{sub.email}</p>
+          <p>{sub.links}</p>
           <p>{sub.message}</p>
-          <small>{sub.date}</small>
+          <small>{new Date(sub.created_at).toLocaleString()}</small>
 
-          {sub.file?.resource_type === "image" && (
-            <img src={sub.file.url} alt="Submission" />
-          )}
-
-          {sub.file?.resource_type === "video" && (
-            <audio controls src={sub.file.url} />
-          )}
-
-          {sub.file && (
+          {sub.file?.url && (
             <a
               href={sub.file.url}
               target="_blank"
@@ -45,7 +48,7 @@ export default function AdminSubmissions() {
 
           <button
             className="admin-btn danger"
-            onClick={() => deleteSubmission(sub.id)}
+            onClick={() => handleDelete(sub.id)}
           >
             Delete
           </button>

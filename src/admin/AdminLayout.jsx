@@ -1,28 +1,52 @@
 import React from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import { useAuth } from "../auth/AuthContext";
+import { Outlet, Link, useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
 
 export default function AdminLayout() {
-  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  function handleLogout() {
-    logout();
-    navigate("/admin/auth");
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    navigate("/admin/auth", { replace: true });
   }
 
   return (
-    <section className="page admin-page">
+    <section className="admin-page">
+      {/* TOP BAR */}
       <div className="admin-topbar">
-        <span className="admin-status">
+        <div className="admin-status">
           Logged in as <strong>Admin</strong>
-        </span>
+        </div>
 
-        <button className="admin-logout" onClick={handleLogout}>
-          Logout
-        </button>
+        <div className="admin-actions">
+          <Link to="/admin" className="admin-btn-small">
+            Dashboard
+          </Link>
+
+          <Link to="/admin/artists" className="admin-btn-small">
+            Artists
+          </Link>
+
+          <Link to="/admin/releases" className="admin-btn-small">
+            Releases
+          </Link>
+
+          <Link to="/admin/submissions" className="admin-btn-small">
+            Submissions
+          </Link>
+
+          {/* NEW — Back to Public Website */}
+          <Link to="/" className="admin-btn-small">
+            View Site
+          </Link>
+
+          <button onClick={handleLogout} className="admin-btn-small">
+            Logout
+          </button>
+        </div>
       </div>
 
+      {/* PAGE CONTENT */}
       <Outlet />
     </section>
   );

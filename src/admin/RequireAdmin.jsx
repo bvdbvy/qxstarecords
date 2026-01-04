@@ -1,13 +1,21 @@
-import React from "react";
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../auth/AuthContext";
+import { supabase } from "../supabase";
+import { useEffect, useState } from "react";
 
 export default function RequireAdmin({ children }) {
-  const { user } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
 
-  if (!user || user.role !== "admin") {
-    return <Navigate to="/admin/auth" replace />;
-  }
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) return null;
+
+  if (!user) return <Navigate to="/admin/auth" replace />;
 
   return children;
 }

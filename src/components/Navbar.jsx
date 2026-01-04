@@ -14,7 +14,6 @@ export default function Navbar() {
             className="logo"
           />
         </Link>
-
         <button
           className="menu-toggle"
           onClick={() => setOpen(!open)}

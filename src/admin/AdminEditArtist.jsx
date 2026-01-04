@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { getArtists, saveArtists } from "../data/artists";
+import { useNavigate, useParams } from "react-router-dom";
+import { getArtistById, updateArtist } from "../data/artists";
 import { uploadImage } from "../utils/cloudinaryUpload";
+
 
 export default function AdminEditArtist() {
   const { id } = useParams();
@@ -11,39 +12,54 @@ export default function AdminEditArtist() {
   const [genre, setGenre] = useState("");
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState("");
-  const [existingImage, setExistingImage] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const artist = getArtists().find(a => a.id === Number(id));
-    if (!artist) return navigate("/admin/artists");
+    async function loadArtist() {
+      const artist = await getArtistById(id);
+      if (!artist) {
+        alert("Artist not found");
+        navigate("/admin/artists");
+        return;
+      }
 
-    setName(artist.name);
-    setGenre(artist.genre);
-    setExistingImage(artist.image);
-    setPreview(artist.image?.url || "");
+      setName(artist.name || "");
+      setGenre(artist.genre || "");
+      setPreview(artist.image || "");
+      setLoading(false);
+    }
+
+    loadArtist();
   }, [id, navigate]);
-
-  const handleImage = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setImage(file);
-    setPreview(URL.createObjectURL(file));
-  };
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setLoading(true);
 
-    let finalImage = existingImage;
-    if (image) finalImage = await uploadImage(image);
+    try {
+      let imageUrl = preview;
 
-    const updated = getArtists().map(a =>
-      a.id === Number(id)
-        ? { ...a, name, genre, image: finalImage }
-        : a
-    );
+      if (image) {
+        imageUrl = await uploadImage(image);
+      }
 
-    saveArtists(updated);
-    navigate("/admin/artists");
+      await updateArtist(id, {
+        name,
+        genre,
+        image: imageUrl
+      });
+
+      navigate("/admin/artists");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update artist");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (loading) {
+    return <p className="admin-section">Loading artist...</p>;
   }
 
   return (
@@ -51,16 +67,27 @@ export default function AdminEditArtist() {
       <h2>Edit Artist</h2>
 
       <form className="admin-form" onSubmit={handleSubmit}>
-        <input value={name} onChange={e => setName(e.target.value)} />
-        <input value={genre} onChange={e => setGenre(e.target.value)} />
+        <input value={name} onChange={e => setName(e.target.value)} required />
+        <input value={genre} onChange={e => setGenre(e.target.value)} required />
 
         <div className="admin-image-preview">
-          {preview && <img src={preview} />}
+          {preview ? <img src={preview} alt="Preview" /> : <span>No image</span>}
         </div>
 
-        <input type="file" accept="image/*" onChange={handleImage} />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={e => {
+            const file = e.target.files[0];
+            if (!file) return;
+            setImage(file);
+            setPreview(URL.createObjectURL(file));
+          }}
+        />
 
-        <button>Save Changes</button>
+        <button disabled={loading}>
+          {loading ? "Saving..." : "Save Changes"}
+        </button>
       </form>
     </section>
   );

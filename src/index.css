@@ -268,7 +268,9 @@ a {
   text-align: center;
   cursor: pointer;
 }
-
+.admin-card img {
+  height: 140px;
+}
 .admin-card:hover {
   background: rgba(255,255,255,0.05);
 }
@@ -885,4 +887,70 @@ a {
   .nav-links.open {
     display: flex;
   }
+}
+/* =========================
+   ADMIN TABLE OVERRIDES
+========================= */
+
+.admin-table img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.admin-btn-outline {
+  border: 1px solid #fff;
+  background: transparent;
+  color: #fff;
+  padding: 6px 12px;
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.admin-btn-danger {
+  border: 1px solid #ff4d4d;
+  background: transparent;
+  color: #ff4d4d;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.admin-btn-danger:hover {
+  background: #ff4d4d;
+  color: #000;
+}
+.admin-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.admin-sidebar {
+  width: 220px;
+  background: #0f0f0f;
+  padding: 20px;
+}
+
+.admin-logo {
+  color: white;
+  margin-bottom: 20px;
+}
+
+.admin-sidebar nav a {
+  display: block;
+  color: #ccc;
+  padding: 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  margin-bottom: 6px;
+}
+
+.admin-sidebar nav a.active {
+  background: #1e1e1e;
+  color: white;
+}
+
+.admin-content {
+  flex: 1;
+  padding: 30px;
 }

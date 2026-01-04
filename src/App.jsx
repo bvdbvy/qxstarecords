@@ -1,42 +1,41 @@
-import Press from "./pages/Press";
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+import PublicLayout from "./layouts/PublicLayout";
+import AdminLayout from "./layouts/AdminLayout";
 
 import Home from "./pages/Home";
 import Artists from "./pages/Artists";
 import Releases from "./pages/Releases";
+import Press from "./pages/Press";
 
 import RequireAdmin from "./admin/RequireAdmin";
-import AdminAddArtist from "./admin/AdminAddArtist";
-import AdminEditArtist from "./admin/AdminEditArtist";
+import AdminLogin from "./admin/AdminLogin";
 import AdminDashboard from "./admin/AdminDashboard";
 import AdminArtists from "./admin/AdminArtists";
+import AdminAddArtist from "./admin/AdminAddArtist";
+import AdminEditArtist from "./admin/AdminEditArtist";
 import AdminReleases from "./admin/AdminReleases";
 import AdminAddRelease from "./admin/AdminAddRelease";
 import AdminEditRelease from "./admin/AdminEditRelease";
 import AdminSubmissions from "./admin/AdminSubmissions";
-import AdminLayout from "./admin/AdminLayout";
-import AdminLogin from "./admin/AdminLogin";
 
 function App() {
   return (
     <BrowserRouter>
-      <Navbar />
-
       <Routes>
-        {/* Public */}
-        <Route path="/" element={<Home />} />
-        <Route path="/artists" element={<Artists />} />
-        <Route path="/releases" element={<Releases />} />
-        <Route path="/press" element={<Press />} />
+        {/* PUBLIC SITE */}
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/artists" element={<Artists />} />
+          <Route path="/releases" element={<Releases />} />
+          <Route path="/press" element={<Press />} />
+        </Route>
 
-        {/* Admin Auth (PUBLIC) */}
+        {/* ADMIN AUTH */}
         <Route path="/admin/auth" element={<AdminLogin />} />
 
-        {/* Admin (PROTECTED) */}
+        {/* ADMIN (PROTECTED) */}
         <Route
           path="/admin"
           element={
@@ -58,8 +57,6 @@ function App() {
           <Route path="submissions" element={<AdminSubmissions />} />
         </Route>
       </Routes>
-
-      <Footer />
     </BrowserRouter>
   );
 }

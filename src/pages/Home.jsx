@@ -9,6 +9,7 @@ export default function Home() {
 
         <p className="tagline">
           An independent record label shaping sound, culture, and artist identity.
+          Owned by specialist in the music industry and well known producers across the continent who has won several awards including the grammy.
         </p>
 
         <a href="/releases" className="cta">

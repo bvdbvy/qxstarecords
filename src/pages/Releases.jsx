@@ -1,8 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { getReleases } from "../data/releases";
 
 export default function Releases() {
-  const releases = getReleases();
+  const [releases, setReleases] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+useEffect(() => {
+  async function loadReleases() {
+    try {
+      const data = await getReleases();
+      setReleases(data);
+    } catch (err) {
+      console.error("Failed to load releases:", err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  loadReleases();
+}, []);
+
+  if (loading) {
+    return (
+      <section className="page artists-page">
+        <p>Loading releases...</p>
+      </section>
+    );
+  }
 
   return (
     <section className="page artists-page">
@@ -15,12 +39,10 @@ export default function Releases() {
         {releases.map((r) => (
           <div className="artist-card" key={r.id}>
             <div className="artist-image">
-<img
-  src={r.cover?.url || "/placeholder.png"}
-  alt={r.title}
-  loading="lazy"
-/>
-
+              <img
+                src={r.cover || "/placeholder.png"}
+                alt={r.title}
+              />
             </div>
 
             <h3>{r.title}</h3>
