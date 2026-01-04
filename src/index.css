@@ -1000,3 +1000,117 @@ a {
     opacity: 0.6;
   }
 }
+/* =====================================
+   GLOBAL MOBILE NORMALIZATION LAYER
+   Applies to ALL pages
+===================================== */
+
+@media (max-width: 768px) {
+
+  /* ----- Global resets ----- */
+  html, body {
+    overflow-x: hidden;
+  }
+
+  section,
+  main,
+  .page,
+  .content,
+  .container {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  /* ----- Navbar & hamburger ----- */
+  .navbar,
+  .nav {
+    padding: 14px 16px;
+  }
+
+  .hamburger,
+  .menu-toggle {
+    position: relative;
+    z-index: 1001;
+  }
+
+  .nav-links,
+  .menu {
+    width: 100%;
+    left: 0;
+    right: 0;
+  }
+
+  /* ----- Hero fix (all pages) ----- */
+  .hero {
+    height: auto !important;
+    min-height: unset;
+    padding-top: 110px;
+    padding-bottom: 60px;
+    align-items: flex-start;
+    text-align: center;
+  }
+
+  .hero img,
+  .hero-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+
+  /* ----- Images everywhere ----- */
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* ----- Press page / content pages ----- */
+  .press,
+  .press-page,
+  .article,
+  .article-content {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  /* ----- Admin pages ----- */
+  .admin-page {
+    padding-top: 110px;
+  }
+
+  .admin-table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .admin-table table {
+    width: 100%;
+  }
+
+  .admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .admin-btn,
+  .admin-btn-outline,
+  .admin-btn-danger {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* ----- Forms ----- */
+  input,
+  select,
+  textarea,
+  button {
+    width: 100%;
+    max-width: 100%;
+  }
+
+}
