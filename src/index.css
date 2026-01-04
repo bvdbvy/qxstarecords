@@ -955,24 +955,22 @@ a {
   padding: 30px;
 }
 /* =========================
-   MOBILE HERO FIX
+   MOBILE HERO (CLEAN FIX)
 ========================= */
 
 @media (max-width: 768px) {
   .hero {
-    height: auto;              /* STOP forcing full viewport */
-    min-height: 85vh;          /* controlled height */
-    padding-top: 120px;        /* account for navbar */
+    height: auto !important;
+    min-height: 85vh;
+    padding-top: 120px;
     padding-bottom: 60px;
-    align-items: flex-start;   /* IMPORTANT */
+    align-items: flex-start;
   }
-}
-@media (max-width: 768px) {
+
   .hero-content {
     padding: 0 20px;
   }
-}
-@media (max-width: 768px) {
+
   .brand {
     font-size: 2.4rem;
     letter-spacing: 4px;
@@ -983,8 +981,7 @@ a {
     letter-spacing: 4px;
     margin-top: 6px;
   }
-}
-@media (max-width: 768px) {
+
   .tagline {
     font-size: 0.95rem;
     line-height: 1.6;
@@ -992,15 +989,13 @@ a {
     margin-left: auto;
     margin-right: auto;
   }
-}
-@media (max-width: 768px) {
+
   .cta {
     margin-top: 28px;
     padding: 12px 32px;
     font-size: 0.75rem;
   }
-}
-@media (max-width: 768px) {
+
   .hero::before {
     opacity: 0.6;
   }
