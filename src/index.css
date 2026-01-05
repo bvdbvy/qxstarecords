@@ -1001,116 +1001,123 @@ a {
   }
 }
 /* =====================================
-   GLOBAL MOBILE NORMALIZATION LAYER
-   Applies to ALL pages
+   MOBILE DESIGN — QXSTA
 ===================================== */
 
 @media (max-width: 768px) {
 
-  /* ----- Global resets ----- */
-  html, body {
-    overflow-x: hidden;
+  /* ----- Navbar ----- */
+  .navbar {
+    height: 64px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
-  section,
-  main,
-  .page,
-  .content,
-  .container {
-    width: 100%;
-    max-width: 100%;
-    padding-left: 16px;
-    padding-right: 16px;
+  .logo {
+    font-size: 14px;
+    letter-spacing: 2px;
   }
 
-  /* ----- Navbar & hamburger ----- */
-  .navbar,
-  .nav {
-    padding: 14px 16px;
+  .hamburger {
+    width: 28px;
+    height: 20px;
   }
 
-  .hamburger,
-  .menu-toggle {
-    position: relative;
-    z-index: 1001;
-  }
-
-  .nav-links,
-  .menu {
-    width: 100%;
+  /* Mobile menu */
+  .nav-links {
+    position: fixed;
+    top: 64px;
     left: 0;
     right: 0;
-  }
-
-  /* ----- Hero fix (all pages) ----- */
-  .hero {
-    height: auto !important;
-    min-height: unset;
-    padding-top: 110px;
-    padding-bottom: 60px;
-    align-items: flex-start;
+    background: black;
+    padding: 32px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
     text-align: center;
   }
 
-  .hero img,
-  .hero-image {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
+  /* ----- Hero (Home) ----- */
+  .hero {
+    min-height: auto;
+    padding: 120px 20px 80px;
+    text-align: center;
   }
 
-  /* ----- Images everywhere ----- */
-  img {
-    max-width: 100%;
-    height: auto;
-    display: block;
+  .hero h1 {
+    font-size: 36px;
+    letter-spacing: 4px;
   }
 
-  /* ----- Press page / content pages ----- */
-  .press,
-  .press-page,
-  .article,
-  .article-content {
-    max-width: 100%;
-    margin: 0 auto;
+  .hero p {
+    font-size: 14px;
+    line-height: 1.7;
+    opacity: 0.8;
+    max-width: 320px;
+    margin: 20px auto;
   }
 
-  /* ----- Admin pages ----- */
+  .hero button,
+  .hero .btn {
+    margin-top: 32px;
+    padding: 14px 28px;
+  }
+
+  /* ----- Submissions Page ----- */
+  .submissions {
+    padding: 120px 20px 80px;
+  }
+
+  .submissions h1 {
+    font-size: 32px;
+    letter-spacing: 3px;
+  }
+
+  .submissions p {
+    font-size: 14px;
+    margin-bottom: 40px;
+  }
+
+  .submissions form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  input,
+  textarea {
+    padding: 14px;
+    font-size: 14px;
+  }
+
+  /* ----- Admin Dashboard ----- */
   .admin-page {
-    padding-top: 110px;
-  }
-
-  .admin-table {
-    display: block;
-    width: 100%;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-
-  .admin-table table {
-    width: 100%;
+    padding: 120px 20px 80px;
   }
 
   .admin-header {
+    display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+
+  .admin-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 12px;
   }
 
-  .admin-btn,
-  .admin-btn-outline,
-  .admin-btn-danger {
-    width: 100%;
-    text-align: center;
+  .admin-nav button {
+    padding: 14px;
+    font-size: 13px;
   }
 
-  /* ----- Forms ----- */
-  input,
-  select,
-  textarea,
-  button {
-    width: 100%;
-    max-width: 100%;
+  .admin-card {
+    padding: 24px;
+    margin-bottom: 24px;
   }
 
 }
